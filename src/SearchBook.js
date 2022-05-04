@@ -6,23 +6,20 @@ import { Link } from "react-router-dom";
 class SearchBook extends Component {
   callbackUpdateBooks = (books) => {
     this.props.onUpdateBooks(books);
-    let newBooks = [];
-    for (const prop in books) {
-      for (const id of books[prop]) {
-        let book = this.state.books.find((e) => e.id === id);
-        if (book !== undefined) {
-          book.shelf = prop;
-          newBooks.push(book);
-        } else {
-          BooksAPI.get(id).then((b) => {
-            newBooks.push(b);
-          });
-        }
-      }
-    }
-    this.setState((prevState) => ({
-      books: this.mergeBooks(newBooks, prevState.books),
-    }));
+
+    // console.log(this.props.currentBooks)
+
+    //The issue here might be about the asynchronous props updated from react.
+    //If we print this.props.currentBooks here, the console will display the updated array 
+    //with the i icon "This value was evaluated upon first expanding. The value may have changed since then", but in the code, the old list still be using to merge the data
+    //I figured the way is to wait a little bit to get the new list before starting the merge operation, therefore it'll have a small delay time wait moving the book
+    setTimeout(() => {
+      this.setState((prevState) => {
+        return {
+          books: this.mergeBooks(this.props.currentBooks, prevState.books),
+        };
+      });
+    }, 400);
   };
 
   state = {
@@ -56,13 +53,14 @@ class SearchBook extends Component {
     }));
   };
 
-  mergeBooks(currentBooks, searchBooks) {
+  mergeBooks = (currentBooks, searchBooks) => {
     for (let sBook of searchBooks) {
       let findBook = currentBooks.find((b) => b.id === sBook.id);
       if (findBook !== undefined) {
         sBook.shelf = findBook.shelf;
       }
     }
+
     return searchBooks;
   }
 
