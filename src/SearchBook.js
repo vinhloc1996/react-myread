@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Books from "./Books";
-import { Link } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
+import { Link } from "react-router-dom";
 
 class SearchBook extends Component {
   callbackUpdateBooks = (books) => {
@@ -33,15 +33,17 @@ class SearchBook extends Component {
   typingTimeout = null;
 
   searchBooks = (value) => {
-    BooksAPI.search(value).then((data) => {
-      if (data && data.error === undefined) {
-        this.setState(() => ({
-          books: this.mergeBooks(this.props.currentBooks, data),
-        }));
-      } else {
-        this.setState({ books: data.items });
-      }
-    });
+    if (value.trim() !== "") {
+      BooksAPI.search(value).then((data) => {
+        if (data && data.error === undefined) {
+          this.setState(() => ({
+            books: this.mergeBooks(this.props.currentBooks, data),
+          }));
+        } else {
+          this.setState({ books: [] });
+        }
+      });
+    }
   };
 
   onSearch = (value) => {
@@ -50,7 +52,7 @@ class SearchBook extends Component {
       this.searchBooks(value);
     }, 1000);
     this.setState(() => ({
-      query: value.trim(),
+      query: value,
     }));
   };
 
@@ -65,12 +67,11 @@ class SearchBook extends Component {
   }
 
   render() {
-    
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <Link to="/">
-            <button className="close-search">Close</button>
+          <Link to="/" className="close-search">
+            Close
           </Link>
           <div className="search-books-input-wrapper">
             <input

@@ -1,10 +1,10 @@
 import React from "react";
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import "./App.css";
 import ListBooks from "./ListBooks";
 import { Route, Routes } from "react-router-dom";
 import SearchBook from "./SearchBook";
-import * as BooksAPI from "./BooksAPI";
+import NotFound from "./NotFound";
 
 class BooksApp extends React.Component {
   state = {
@@ -57,6 +57,12 @@ class BooksApp extends React.Component {
                 onUpdateBooks={this.updateBooks}
                 currentBooks={this.state.books}
               />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <NotFound />
             }
           />
         </Routes>

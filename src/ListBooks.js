@@ -1,41 +1,43 @@
-import React, { Component } from "react";
+import React from "react";
 import BookShelf from "./BookShelf";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ListShelfs } from "./Utils";
-class ListBooks extends Component {
-  shelfs = ListShelfs;
+const ListBooks = (props) => {
+  const shelfs = ListShelfs;
 
-  onUpdateBooks = (b) => {
-      this.props.onUpdateBooks(b)    
+  const onUpdateBooks = (b) => {
+    props.onUpdateBooks(b);
   };
 
-  render() {
-    return (
-      <div className="list-books">
-        <div className="list-books-title">
-          <h1>MyReads</h1>
-        </div>
-        <div className="list-books-content">
-          <div>
-            {this.shelfs.map((b, index) => (
-              <BookShelf
-                key={index}
-                title={b.title}
-                shelf={b.shelf}
-                books={this.props.books.filter((x) => x.shelf === b.shelf)}
-                callbackUpdateBooks={this.onUpdateBooks}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="open-search">
-          <Link to="/search">
-            <button>Add a book</button>
-          </Link>
+  let navigate = useNavigate(); 
+  const routeChange = () =>{ 
+    let path = `/search`; 
+    navigate(path);
+  }
+
+  return (
+    <div className="list-books">
+      <div className="list-books-title">
+        <h1>MyReads</h1>
+      </div>
+      <div className="list-books-content">
+        <div>
+          {shelfs.map((b, index) => (
+            <BookShelf
+              key={index}
+              title={b.title}
+              shelf={b.shelf}
+              books={props.books.filter((x) => x.shelf === b.shelf)}
+              callbackUpdateBooks={onUpdateBooks}
+            />
+          ))}
         </div>
       </div>
-    );
-  }
-}
+      <div className="open-search">
+      <button onClick={routeChange}>Add a book</button>
+      </div>
+    </div>
+  );
+};
 
 export default ListBooks;
